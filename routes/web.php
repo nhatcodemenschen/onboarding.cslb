@@ -16,9 +16,9 @@ use App\Http\Controllers\Auth\LoginController;
 // Route::get('/', function () {
 //     return view('login');
 // });
-Route::get('/online-checkliste-create', function() {
-    return view('online-checkliste-create');
-});
+// Route::get('/online-checkliste-create', function() {
+//     return view('online-checkliste-create');
+// });
 Route::get('/boarding-unterlagen-new', function() {
     return view('boarding-unterlagen-new');
 });
@@ -57,7 +57,7 @@ Route::post('/logout', '\App\Http\Controllers\Auth\LoginController@logout')->nam
 Route::get('/register', '\App\Http\Controllers\Auth\LoginController@getRegister')->name('get.register');
 Route::post('/register', '\App\Http\Controllers\Auth\LoginController@postRegister')->name('post.register');
 
-//Route::group(['middleware' => ['CheckIdAdmin']], function () {
+Route::group(['middleware' => ['CheckIdAdmin']], function () {
     Route::prefix('users')->group(function () {
         Route::get('/', '\App\Http\Controllers\UsersController@index');
         Route::post('/store', '\App\Http\Controllers\UsersController@store');
@@ -66,19 +66,21 @@ Route::post('/register', '\App\Http\Controllers\Auth\LoginController@postRegiste
         Route::put('/update/{user}', '\App\Http\Controllers\UsersController@update');
     });
     Route::post('/delete', '\App\Http\Controllers\UsersController@delete_user');
-//});
-Route::post('/create-group', '\App\Http\Controllers\UsersController@create_group');
+});
+Route::post('/save-group', '\App\Http\Controllers\UsersController@save_group');
 Route::post('/load-group-modal', '\App\Http\Controllers\UsersController@load_group_modal');
 Route::post('/load-user', '\App\Http\Controllers\UsersController@load_user_group');
 Route::post('/open-user-group', '\App\Http\Controllers\UsersController@open_user_group');
 Route::post('/save-new-form', '\App\Http\Controllers\SaveData@save_new_form');
+Route::post('/open-popup', '\App\Http\Controllers\UsersController@open_popup');
+Route::post('/create_new_group', '\App\Http\Controllers\UsersController@create_new_group');
 
 
-Route::prefix('boarding-unterlagen')->group(function () {
+Route::group(['prefix' => 'boarding-unterlagen', 'middleware' => ['auth.basic']], function(){
     Route::get('/', '\App\Http\Controllers\CheckListController@index');
-    Route::get('/create', '\App\Http\Controllers\CheckListController@insert')->name('create.checklist');
-    Route::post('/store', '\App\Http\Controllers\CheckListController@insert')->name('store.checklist');
-    Route::put('/update/{id}', '\App\Http\Controllers\CheckListController@update')->name('update.checklist');
+    Route::get('/create', '\App\Http\Controllers\CheckListController@create')->name('create.checklist');
+    Route::post('/store', '\App\Http\Controllers\CheckListController@store')->name('store.checklist');
+    Route::post('/update/{id}', '\App\Http\Controllers\CheckListController@update')->name('update.checklist');
     Route::delete('/destroy/{id}', '\App\Http\Controllers\CheckListController@destroy')->name('destroy.checklist');
     Route::get('/edit/{id}', '\App\Http\Controllers\CheckListController@edit')->name('edit.checklist');
 });
